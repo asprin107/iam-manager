@@ -36,7 +36,7 @@ def publish_new_credential(client: botocore.client, user_name: str):
 
     mark_inactive_older_credential(client=client, user_name=user_name)
     change_aws_configure(access_key_id=access_key['AccessKey']['AccessKeyId'], secret_access_key=access_key['AccessKey']['SecretAccessKey'], profile_name=profile_name_val)
-    clear_inactive_credential(client=client, user_name=user_name)
+    remove_inactive_credential(client=client, user_name=user_name)
     return access_key
 
 
@@ -104,15 +104,15 @@ def need_to_publish_new_credential(client: botocore.client, user_name: str):
         raise Exception("Error, Maximum credentials related to IAM User is 2.")
 
 
-def clear_inactive_credential(client: botocore.client, user_name: str):
+def remove_inactive_credential(client: botocore.client, user_name: str):
     """
-    Clear credential that status is inactive
+    Remove credential that status is inactive
 
     :param client: AWS IAM client.
     :param user_name: IAM User name.
     :return: None
     """
-    print(f'[{datetime.now().strftime(date_format)}] CLEAR Inactive credentials for \'{user_name}\'')
+    print(f'[{datetime.now().strftime(date_format)}] REMOVE Inactive credentials for \'{user_name}\'')
     credentials = client.list_access_keys(UserName=user_name)['AccessKeyMetadata']
     for credential in credentials:
         if credential['Status'] == 'Inactive':
